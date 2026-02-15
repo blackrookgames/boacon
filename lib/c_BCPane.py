@@ -58,6 +58,7 @@ class BCPane:
         resolve_x = self.__x._m_resolve(resized, console_w)
         resolve_y = self.__y._m_resolve(resized, console_h)
         if not (resolve_x or resolve_y): return False
+        self._resolved()
         self.__dirty = True
         return True
 

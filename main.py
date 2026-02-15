@@ -1,33 +1,26 @@
-import curses
 import sys
 import time
-from typing import Callable
 
 import lib as boacon
-
-class TestPane(boacon.BCPane):
-    def _draw(self, setchr: Callable[[int, int, boacon.BCChar], None]):
-        super()._draw(setchr)
-        for y in range(self.y.cliplen):
-            for x in range(self.x.cliplen):
-                setchr(\
-                    self.x.clip0 + x,\
-                    self.y.clip0 + y,\
-                    boacon.BCChar(0x5A))
 
 def main():
     boacon.init()
     try:
-        testpane = TestPane()
-        testpane.x.dis0 = 3
-        testpane.x.dis1 = 3
-        testpane.y.dis0 = 3
-        testpane.y.dis1 = 3
-        boacon.panes().append(testpane)
+        pane = boacon.BCConsolePane()
+        pane.x.dis0 = 3
+        pane.x.len = 20
+        pane.y.dis0 = 3
+        pane.y.dis1 = 3
+        pane.print("Line 1\nLine 2\nLine 3\nLine 4")
+        pane.print()
+        pane.print("Hello world!!!")
+        pane.print("This sentence takes multiple lines.")
+        boacon.panes().append(pane)
         while True:
             ch = boacon.getch()
             if ch == 0x1B: break
             boacon.refresh()
+            time.sleep(0.05)
     finally:
         boacon.final()
     return 0

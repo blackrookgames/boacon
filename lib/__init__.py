@@ -3,8 +3,10 @@ from .c_BCCoord import *
 from .c_BCError import *
 from .c_BCPane import *
 from .c_BCState import *
+from .c_BCStr import *
 from .g_attr import *
 from .g_key import *
+from .p_BCConsolePane import *
 
 import curses as _curses
 import numpy as _np
