@@ -1,19 +1,33 @@
 import curses
 import sys
 import time
+from typing import Callable
 
 import lib as boacon
+
+class TestPane(boacon.BCPane):
+    def _draw(self, setchr: Callable[[int, int, boacon.BCChar], None]):
+        super()._draw(setchr)
+        for y in range(self.y.cliplen):
+            for x in range(self.x.cliplen):
+                setchr(\
+                    self.x.clip0 + x,\
+                    self.y.clip0 + y,\
+                    boacon.BCChar(0x5A))
 
 def main():
     boacon.init()
     try:
+        testpane = TestPane()
+        testpane.x.dis0 = 3
+        testpane.x.dis1 = 3
+        testpane.y.dis0 = 3
+        testpane.y.dis1 = 3
+        boacon.panes().append(testpane)
         while True:
-            assert boacon._f_win is not None
             ch = boacon.getch()
-            if ch == 0x1B: return 0
-            boacon._m_setchr_nocolor(0, 0, boacon.BCChar(0x30, attr = boacon.attr_create(color = 2, emp = True)))
-            boacon._f_win.refresh()
-            time.sleep(0.05)
+            if ch == 0x1B: break
+            boacon.refresh()
     finally:
         boacon.final()
     return 0
