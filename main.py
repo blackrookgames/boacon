@@ -9,7 +9,16 @@ import lib as boacon
 def postdraw(win:curses.window):
     win.addstr(0, 0, str(datetime.now()))
 
+def on_init():
+    boacon.postdraw().connect(postdraw)
+
+def on_final():
+    boacon.postdraw().disconnect(postdraw)
+    time.sleep(5)
+
 def main():
+    boacon.on_init().connect(on_init)
+    boacon.on_final().connect(on_final)
     boacon.init()
     try:
         # Pane
@@ -23,8 +32,6 @@ def main():
         pane.print("Hello world!!!")
         pane.print("This sentence takes multiple lines.")
         boacon.panes().append(pane)
-        # Post draw
-        boacon.postdraw().connect(postdraw)
         # Loop
         while True:
             ch = boacon.getch()

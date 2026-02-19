@@ -49,8 +49,13 @@ _f_bgbuffer:None|_npt.NDArray[_np.bool_] = None
 
 _f_border = False
 
-_s_postdraw:None|BCSignal[_curses.window] = None
+_s_on_init_emitter = BCSignalEmitter[()]()
+_s_on_init = BCSignal(_s_on_init_emitter)
+_s_on_final_emitter = BCSignalEmitter[()]()
+_s_on_final = BCSignal(_s_on_final_emitter)
+
 _s_postdraw_emitter:None|BCSignalEmitter[_curses.window] = None
+_s_postdraw:None|BCSignal[_curses.window] = None
 
 #endregion
 
@@ -181,10 +186,12 @@ def init():
     _s_postdraw = BCSignal[_curses.window](_s_postdraw_emitter)
     # Success!!!
     _f_state = BCState.RUN
+    _s_on_init_emitter.emit(())
 
 def final():
     global _f_state
     if _f_state != BCState.RUN: return
+    _s_on_final_emitter.emit(())
     _f_state = BCState.FINAL
     # Global vars
     global _f_win, _panes
@@ -222,6 +229,20 @@ def panes():
     global _f_panes
     assert _f_panes is not None
     return _f_panes
+
+def on_init():
+    """
+    Emitted after the boacon system is initialized
+    """
+    global _s_on_init
+    return _s_on_init
+
+def on_final():
+    """
+    Emitted before the boacon system is finalized
+    """
+    global _s_on_final
+    return _s_on_final
 
 def postdraw():
     """
