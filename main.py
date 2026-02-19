@@ -1,11 +1,18 @@
+import curses
 import sys
 import time
 
+from datetime import datetime
+
 import lib as boacon
+
+def postdraw(win:curses.window):
+    win.addstr(0, 0, str(datetime.now()))
 
 def main():
     boacon.init()
     try:
+        # Pane
         pane = boacon.BCConsolePane()
         pane.x.dis0 = 3
         pane.x.len = 20
@@ -16,6 +23,9 @@ def main():
         pane.print("Hello world!!!")
         pane.print("This sentence takes multiple lines.")
         boacon.panes().append(pane)
+        # Post draw
+        boacon.postdraw().connect(postdraw)
+        # Loop
         while True:
             ch = boacon.getch()
             if ch == 0x1B: break
